@@ -4,14 +4,22 @@ import 'package:time_tracker_flutter_course/app/sing_in/social_sing_in_button.da
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
 class SingInPage extends StatelessWidget {
-  SingInPage({@required this.auth, @required this.onSingIn});
-  final Function(User) onSingIn;
+  SingInPage({@required this.auth});
+  //final Function(User) onSingIn;
   final AuthBase auth;
   Future<void> _singInAnonymously() async {
     try {
-      User user = await auth.singInAnonymosly();
+      await auth.singInAnonymosly();
       //print('${authResult.user.uid}');
-      onSingIn(user);
+      // onSingIn(user);
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  Future<void> _singInWithGoogle() async {
+    try {
+      await auth.singInWithGoogle();
     } catch (e) {
       print(e.toString());
     }
@@ -56,7 +64,7 @@ class SingInPage extends StatelessWidget {
             text: 'Sing In With Google',
             textColor: Colors.black87,
             color: Colors.white,
-            onPressed: () {},
+            onPressed: _singInWithGoogle,
             height: 50.0,
           ),
           SizedBox(
@@ -104,9 +112,5 @@ class SingInPage extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void _singInWithGoogle() {
-    //TODO: auth
   }
 }
