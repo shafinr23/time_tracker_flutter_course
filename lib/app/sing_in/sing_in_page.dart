@@ -3,6 +3,8 @@ import 'package:time_tracker_flutter_course/app/sing_in/sing_in_button.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/social_sing_in_button.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
+import 'email_sing_in_page.dart';
+
 class SingInPage extends StatelessWidget {
   SingInPage({@required this.auth});
   //final Function(User) onSingIn;
@@ -25,6 +27,15 @@ class SingInPage extends StatelessWidget {
     }
   }
 
+  void _singInEmail(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        fullscreenDialog: true,
+        builder: (context) => EmailSingInPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,12 +44,12 @@ class SingInPage extends StatelessWidget {
         centerTitle: true,
         elevation: 2.0,
       ),
-      body: _buildContent(),
+      body: _buildContent(context),
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(15.00),
       child: Column(
@@ -85,7 +96,7 @@ class SingInPage extends StatelessWidget {
             text: 'Sing In With email',
             textColor: Colors.white,
             color: Colors.teal[700],
-            onPressed: () {},
+            onPressed: () => _singInEmail(context),
             height: 50.0,
           ),
           SizedBox(
