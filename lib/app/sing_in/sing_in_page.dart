@@ -31,7 +31,9 @@ class SingInPage extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
-        builder: (context) => EmailSingInPage(),
+        builder: (context) => EmailSingInPage(
+          auth: auth,
+        ),
       ),
     );
   }

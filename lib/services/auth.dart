@@ -12,6 +12,8 @@ abstract class AuthBase {
   Stream<User> get onAuthStateChange;
   Future<User> currentUser();
   Future<User> singInAnonymosly();
+  Future<User> singInWithEmailpass(String email, String pass);
+  Future<User> regInWithEmailpass(String email, String pass);
   Future<User> singInWithGoogle();
   Future<void> singOut();
 }
@@ -40,6 +42,20 @@ class Auth implements AuthBase {
   @override
   Future<User> singInAnonymosly() async {
     final authResult = await _fireBaseAuth.signInAnonymously();
+    return _userFromFirebase(authResult.user);
+  }
+
+  @override
+  Future<User> singInWithEmailpass(String email, String pass) async {
+    final authResult = await _fireBaseAuth.signInWithEmailAndPassword(
+        email: email, password: pass);
+    return _userFromFirebase(authResult.user);
+  }
+
+  @override
+  Future<User> regInWithEmailpass(String email, String pass) async {
+    final authResult = await _fireBaseAuth.createUserWithEmailAndPassword(
+        email: email, password: pass);
     return _userFromFirebase(authResult.user);
   }
 
