@@ -15,10 +15,16 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
   final TextEditingController _emailController = TextEditingController();
   // String email;
   final TextEditingController _passController = TextEditingController();
+  final FocusNode _emailFocusNode = FocusNode();
+  final FocusNode _passFocusNode = FocusNode();
 
   String get _email => _emailController.text;
   String get _pass => _passController.text;
   EmailSingInType _formtype = EmailSingInType.singin;
+  void _emailEdottingCompleate() {
+    FocusScope.of(context).requestFocus(_passFocusNode);
+  }
+
   void _submit() async {
     try {
       if (_formtype == EmailSingInType.singin) {
@@ -71,6 +77,7 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
       obscureText: true,
       controller: _passController,
       textInputAction: TextInputAction.done,
+      focusNode: _passFocusNode,
     );
   }
 
@@ -84,6 +91,8 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
       autocorrect: false,
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
+      focusNode: _emailFocusNode,
+      onEditingComplete: _emailEdottingCompleate,
     );
   }
 
