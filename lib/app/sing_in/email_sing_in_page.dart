@@ -14,11 +14,13 @@ class EmailSingInPage extends StatelessWidget {
         centerTitle: true,
         elevation: 2.0,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Card(
-          child: EmailSingInForm(
-            auth: auth,
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Card(
+            child: EmailSingInForm(
+              auth: auth,
+            ),
           ),
         ),
       ),
