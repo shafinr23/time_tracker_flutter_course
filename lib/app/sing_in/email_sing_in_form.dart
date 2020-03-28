@@ -73,9 +73,11 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
   }
 
   TextField _buildPassTextField() {
+    bool passValidate = widget.passValidator.isvalid(_pass);
     return TextField(
       decoration: InputDecoration(
         labelText: 'passWord',
+        errorText: passValidate ? null : widget.invalidePassError,
       ),
       obscureText: true,
       controller: _passController,
@@ -88,10 +90,12 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
   }
 
   TextField _buildEmailTextField() {
+    bool emailValidate = widget.emailValidator.isvalid(_email);
     return TextField(
       decoration: InputDecoration(
         labelText: 'Email',
         hintText: 'Test@email.com',
+        errorText: emailValidate ? null : widget.invalideEmailError,
       ),
       controller: _emailController,
       autocorrect: false,
