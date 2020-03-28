@@ -22,11 +22,16 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
   String get _email => _emailController.text;
   String get _pass => _passController.text;
   EmailSingInType _formtype = EmailSingInType.singin;
+  bool _submitted = false;
+
   void _emailEdottingCompleate() {
     FocusScope.of(context).requestFocus(_passFocusNode);
   }
 
   void _submit() async {
+    setState(() {
+      _submitted = true;
+    });
     try {
       if (_formtype == EmailSingInType.singin) {
         await widget.auth.singInWithEmailpass(_email, _pass);
@@ -41,6 +46,7 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
 
   void _toggolForm() {
     setState(() {
+      _submitted = false;
       _formtype = _formtype == EmailSingInType.singin
           ? EmailSingInType.register
           : EmailSingInType.singin;
@@ -73,11 +79,11 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
   }
 
   TextField _buildPassTextField() {
-    bool passValidate = widget.passValidator.isvalid(_pass);
+    bool showErrorText = _submitted && !widget.passValidator.isvalid(_pass);
     return TextField(
       decoration: InputDecoration(
         labelText: 'passWord',
-        errorText: passValidate ? null : widget.invalidePassError,
+        errorText: showErrorText ? widget.invalidePassError : null,
       ),
       obscureText: true,
       controller: _passController,
@@ -90,12 +96,12 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
   }
 
   TextField _buildEmailTextField() {
-    bool emailValidate = widget.emailValidator.isvalid(_email);
+    bool showErrorText = _submitted && !widget.emailValidator.isvalid(_email);
     return TextField(
       decoration: InputDecoration(
         labelText: 'Email',
         hintText: 'Test@email.com',
-        errorText: emailValidate ? null : widget.invalideEmailError,
+        errorText: showErrorText ? widget.invalideEmailError : null,
       ),
       controller: _emailController,
       autocorrect: false,
