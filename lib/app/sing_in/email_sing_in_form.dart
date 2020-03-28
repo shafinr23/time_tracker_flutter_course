@@ -55,11 +55,12 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
     final secenderText = _formtype == EmailSingInType.register
         ? 'meed an account ? register '
         : 'have a acount ? sing in';
+    bool submitEnable = _email.isNotEmpty && _pass.isNotEmpty;
     return [
       _buildEmailTextField(),
       _buildPassTextField(),
       FormSubmitButton(
-        onPressed: _submit,
+        onPressed: submitEnable ? _submit : null,
         text: primaryText,
       ),
       FlatButton(
@@ -78,6 +79,9 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
       controller: _passController,
       textInputAction: TextInputAction.done,
       focusNode: _passFocusNode,
+      onChanged: (pass) {
+        _updateState();
+      },
     );
   }
 
@@ -93,6 +97,9 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
       textInputAction: TextInputAction.next,
       focusNode: _emailFocusNode,
       onEditingComplete: _emailEdottingCompleate,
+      onChanged: (email) {
+        _updateState;
+      },
     );
   }
 
@@ -106,5 +113,10 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
         children: _buildChildren(),
       ),
     );
+  }
+
+  void _updateState() {
+    //  print('email is : $_email , pass is : $_pass');
+    setState(() {});
   }
 }
