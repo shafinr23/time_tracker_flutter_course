@@ -23,14 +23,19 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
   String get _pass => _passController.text;
   EmailSingInType _formtype = EmailSingInType.singin;
   bool _submitted = false;
+  bool _isLoading = false;
 
   void _emailEdottingCompleate() {
-    FocusScope.of(context).requestFocus(_passFocusNode);
+    final newFocus = widget.emailValidator.isvalid(_email)
+        ? _passFocusNode
+        : _emailFocusNode;
+    FocusScope.of(context).requestFocus(newFocus);
   }
 
   void _submit() async {
     setState(() {
       _submitted = true;
+      _isLoading = true;
     });
     try {
       if (_formtype == EmailSingInType.singin) {
@@ -41,6 +46,10 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
       Navigator.of(context).pop();
     } catch (e) {
       print(e.toString());
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -63,7 +72,8 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
         ? 'meed an account ? register '
         : 'have a acount ? sing in';
     bool submitEnable = widget.emailValidator.isvalid(_email) &&
-        widget.passValidator.isvalid(_pass);
+        widget.passValidator.isvalid(_pass) &&
+        !_isLoading;
     return [
       _buildEmailTextField(),
       _buildPassTextField(),
@@ -72,7 +82,7 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
         text: primaryText,
       ),
       FlatButton(
-        onPressed: _toggolForm,
+        onPressed: !_isLoading ? _toggolForm : null,
         child: Text(secenderText),
       )
     ];
@@ -82,6 +92,7 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
     bool showErrorText = _submitted && !widget.passValidator.isvalid(_pass);
     return TextField(
       decoration: InputDecoration(
+        enabled: _isLoading == false,
         labelText: 'passWord',
         errorText: showErrorText ? widget.invalidePassError : null,
       ),
@@ -99,6 +110,7 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
     bool showErrorText = _submitted && !widget.emailValidator.isvalid(_email);
     return TextField(
       decoration: InputDecoration(
+        enabled: _isLoading == false,
         labelText: 'Email',
         hintText: 'Test@email.com',
         errorText: showErrorText ? widget.invalideEmailError : null,
