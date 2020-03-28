@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:time_tracker_flutter_course/app/sing_in/validator.dart';
 import 'package:time_tracker_flutter_course/common_widgets/form_submit_button.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
 enum EmailSingInType { singin, register }
 
-class EmailSingInForm extends StatefulWidget {
+class EmailSingInForm extends StatefulWidget with EmailAndPasswordValidator {
   EmailSingInForm({this.auth});
   final AuthBase auth;
   @override
@@ -55,7 +56,8 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
     final secenderText = _formtype == EmailSingInType.register
         ? 'meed an account ? register '
         : 'have a acount ? sing in';
-    bool submitEnable = _email.isNotEmpty && _pass.isNotEmpty;
+    bool submitEnable = widget.emailValidator.isvalid(_email) &&
+        widget.passValidator.isvalid(_pass);
     return [
       _buildEmailTextField(),
       _buildPassTextField(),
