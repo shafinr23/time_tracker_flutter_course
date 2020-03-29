@@ -8,6 +8,8 @@ class PlatformAlartDialog extends PlatformWidgets {
   final String title;
   final String content;
   final String defaultActionText;
+  final String cancelActionButton;
+
   Future<bool> show(BuildContext context) async {
     return Platform.isIOS
         ? await showCupertinoDialog<bool>(
@@ -24,6 +26,7 @@ class PlatformAlartDialog extends PlatformWidgets {
   PlatformAlartDialog({
     @required this.title,
     @required this.content,
+    this.cancelActionButton,
     @required this.defaultActionText,
   })  : assert(title != null),
         assert(content != null),
@@ -48,12 +51,22 @@ class PlatformAlartDialog extends PlatformWidgets {
   }
 
   List<Widget> _buildActions(BuildContext context) {
-    return [
+    final action = <Widget>[];
+    if (cancelActionButton != null) {
+      action.add(
+        PlatformAlertDialogAction(
+          onPressed: () => Navigator.of(context).pop(false),
+          child: Text(cancelActionButton),
+        ),
+      );
+    }
+    action.add(
       PlatformAlertDialogAction(
-        onPressed: () => Navigator.of(context).pop(),
+        onPressed: () => Navigator.of(context).pop(true),
         child: Text(defaultActionText),
       ),
-    ];
+    );
+    return action;
   }
 }
 

@@ -22,7 +22,7 @@ class HomePage extends StatelessWidget {
             title: 'Logout',
             content: 'are you sure you logout ',
             defaultActionText: 'Logout',
-            cancleActionButton: 'cancle')
+            cancelActionButton: 'cancle')
         .show(context);
     if (didRequestSingout == true) {
       _singOut();
