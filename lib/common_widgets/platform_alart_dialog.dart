@@ -6,6 +6,9 @@ class PlatformAlartDialog extends PlatformWidgets {
   final String title;
   final String content;
   final String defaultActionText;
+  Future<bool>show(BuildContext context)async{
+    return await showDialog(context:context , builder: (context)=>this, );
+  }
 
   PlatformAlartDialog({
     @required this.title,
@@ -14,6 +17,7 @@ class PlatformAlartDialog extends PlatformWidgets {
   })  : assert(title != null),
         assert(content != null),
         assert(defaultActionText != null);
+
 
   @override
   Widget buildCupertinoWidget(BuildContext context) {
