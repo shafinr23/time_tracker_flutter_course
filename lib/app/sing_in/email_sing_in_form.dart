@@ -1,8 +1,7 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/validator.dart';
 import 'package:time_tracker_flutter_course/common_widgets/form_submit_button.dart';
+import 'package:time_tracker_flutter_course/common_widgets/platform_alart_dialog.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
 enum EmailSingInType { singin, register }
@@ -48,20 +47,11 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
       Navigator.of(context).pop();
     } catch (e) {
       //print(e.toString());
-      if (Platform.isIOS) {
-        print('Show CupertinoAlartDialog');
-      } else {
-        showDialog(
-          context: context,
-          builder: (context) {
-            return AlertDialog(
-              title: Text('singIn failed '),
-              content: Text(e.toString()),
-              actions: [],
-            );
-          },
-        );
-      }
+      PlatformAlartDialog(
+        title: 'Sing in Failed ',
+        content: e.toString(),
+        defaultActionText: 'OK',
+      ).show(context);
     } finally {
       setState(() {
         _isLoading = false;
