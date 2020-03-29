@@ -18,11 +18,12 @@ class HomePage extends StatelessWidget {
   }
 
   Future<void> _confirmSingout(BuildContext context) async {
-    final didRequestSingout = PlatformAlartDialog(
-      title: 'Logout',
-      content: 'are you sure you logout ',
-      defaultActionText: 'Logout',
-    ).show(context);
+    final didRequestSingout = await PlatformAlartDialog(
+            title: 'Logout',
+            content: 'are you sure you logout ',
+            defaultActionText: 'Logout',
+            cancleActionButton: 'cancle')
+        .show(context);
     if (didRequestSingout == true) {
       _singOut();
     }
