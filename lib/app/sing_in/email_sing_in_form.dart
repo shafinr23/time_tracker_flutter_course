@@ -57,11 +57,7 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
             return AlertDialog(
               title: Text('singIn failed '),
               content: Text(e.toString()),
-              actions: [
-                FlatButton(
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Text('OK'))
-              ],
+              actions: [],
             );
           },
         );
