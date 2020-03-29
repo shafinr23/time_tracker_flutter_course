@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/validator.dart';
 import 'package:time_tracker_flutter_course/common_widgets/form_submit_button.dart';
@@ -45,17 +47,25 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
       }
       Navigator.of(context).pop();
     } catch (e) {
-      print(e.toString());
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text('singIn failed '),
-            content: Text(e.toString()),
-            actions: [FlatButton(onPressed: () {}, child: Text('OK'))],
-          );
-        },
-      );
+      //print(e.toString());
+      if (Platform.isIOS) {
+        print('Show CupertinoAlartDialog');
+      } else {
+        showDialog(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: Text('singIn failed '),
+              content: Text(e.toString()),
+              actions: [
+                FlatButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Text('OK'))
+              ],
+            );
+          },
+        );
+      }
     } finally {
       setState(() {
         _isLoading = false;
