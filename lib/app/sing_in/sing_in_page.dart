@@ -3,18 +3,39 @@ import 'package:time_tracker_flutter_course/app/sing_in/sing_in_button.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/social_sing_in_button.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
+import 'email_sing_in_page.dart';
+
 class SingInPage extends StatelessWidget {
-  SingInPage({@required this.auth, @required this.onSingIn});
-  final Function(User) onSingIn;
+  SingInPage({@required this.auth});
+  //final Function(User) onSingIn;
   final AuthBase auth;
   Future<void> _singInAnonymously() async {
     try {
-      User user = await auth.singInAnonymosly();
+      await auth.singInAnonymosly();
       //print('${authResult.user.uid}');
-      onSingIn(user);
+      // onSingIn(user);
     } catch (e) {
       print(e.toString());
     }
+  }
+
+  Future<void> _singInWithGoogle() async {
+    try {
+      await auth.singInWithGoogle();
+    } catch (e) {
+      print(e.toString());
+    }
+  }
+
+  void _singInEmail(BuildContext context) {
+    Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        fullscreenDialog: true,
+        builder: (context) => EmailSingInPage(
+          auth: auth,
+        ),
+      ),
+    );
   }
 
   @override
@@ -25,12 +46,12 @@ class SingInPage extends StatelessWidget {
         centerTitle: true,
         elevation: 2.0,
       ),
-      body: _buildContent(),
+      body: _buildContent(context),
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildContent() {
+  Widget _buildContent(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(15.00),
       child: Column(
@@ -56,7 +77,7 @@ class SingInPage extends StatelessWidget {
             text: 'Sing In With Google',
             textColor: Colors.black87,
             color: Colors.white,
-            onPressed: () {},
+            onPressed: _singInWithGoogle,
             height: 50.0,
           ),
           SizedBox(
@@ -77,7 +98,7 @@ class SingInPage extends StatelessWidget {
             text: 'Sing In With email',
             textColor: Colors.white,
             color: Colors.teal[700],
-            onPressed: () {},
+            onPressed: () => _singInEmail(context),
             height: 50.0,
           ),
           SizedBox(
@@ -104,9 +125,5 @@ class SingInPage extends StatelessWidget {
         ],
       ),
     );
-  }
-
-  void _singInWithGoogle() {
-    //TODO: auth
   }
 }
