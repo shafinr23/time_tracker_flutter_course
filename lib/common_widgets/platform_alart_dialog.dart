@@ -94,6 +94,7 @@ class PlatformAlertDialogAction extends PlatformWidgets {
     return FlatButton(
       child: child,
       onPressed: onPressed,
+      color: Colors.indigo,
     );
   }
 }
