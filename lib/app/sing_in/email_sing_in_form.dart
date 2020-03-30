@@ -3,12 +3,12 @@ import 'package:time_tracker_flutter_course/app/sing_in/validator.dart';
 import 'package:time_tracker_flutter_course/common_widgets/form_submit_button.dart';
 import 'package:time_tracker_flutter_course/common_widgets/platform_alart_dialog.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
+import 'package:time_tracker_flutter_course/services/auth_provider.dart';
 
 enum EmailSingInType { singin, register }
 
 class EmailSingInForm extends StatefulWidget with EmailAndPasswordValidator {
-  EmailSingInForm({this.auth});
-  final AuthBase auth;
+
   @override
   _EmailSingInFormState createState() => _EmailSingInFormState();
 }
@@ -39,10 +39,11 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
       _isLoading = true;
     });
     try {
+      final auth = AuthProvider.of(context);
       if (_formtype == EmailSingInType.singin) {
-        await widget.auth.singInWithEmailpass(_email, _pass);
+        await auth.singInWithEmailpass(_email, _pass);
       } else {
-        await widget.auth.regInWithEmailpass(_email, _pass);
+        await auth.regInWithEmailpass(_email, _pass);
       }
       Navigator.of(context).pop();
     } catch (e) {

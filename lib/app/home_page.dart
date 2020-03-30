@@ -1,15 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:time_tracker_flutter_course/common_widgets/platform_alart_dialog.dart';
-import 'package:time_tracker_flutter_course/services/auth.dart';
+import 'package:time_tracker_flutter_course/services/auth_provider.dart';
 
 class HomePage extends StatelessWidget {
-  // final VoidCallback onSignOut;
-  final AuthBase auth;
-  HomePage({
-    this.auth,
-  });
-  Future<void> _singOut() async {
+  Future<void> _singOut(BuildContext context) async {
     try {
+      final auth = AuthProvider.of(context);
       await auth.singOut();
       //onSignOut();
     } catch (e) {
@@ -25,7 +21,7 @@ class HomePage extends StatelessWidget {
             cancelActionButton: 'cancle')
         .show(context);
     if (didRequestSingout == true) {
-      _singOut();
+      _singOut(context);
     }
   }
 
