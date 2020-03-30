@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/validator.dart';
 import 'package:time_tracker_flutter_course/common_widgets/form_submit_button.dart';
+import 'package:time_tracker_flutter_course/common_widgets/platform_alart_dialog.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
 enum EmailSingInType { singin, register }
@@ -45,7 +46,12 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
       }
       Navigator.of(context).pop();
     } catch (e) {
-      print(e.toString());
+      //print(e.toString());
+      PlatformAlartDialog(
+        title: 'Sing in Failed ',
+        content: e.toString(),
+        defaultActionText: 'OK',
+      ).show(context);
     } finally {
       setState(() {
         _isLoading = false;
