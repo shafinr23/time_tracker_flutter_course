@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/sing_in_button.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/social_sing_in_button.dart';
-import 'package:time_tracker_flutter_course/services/auth.dart';
+import 'package:time_tracker_flutter_course/services/auth_provider.dart';
 
 import 'email_sing_in_page.dart';
 
 class SingInPage extends StatelessWidget {
-  SingInPage({@required this.auth});
-  //final Function(User) onSingIn;
-  final AuthBase auth;
-  Future<void> _singInAnonymously() async {
+  Future<void> _singInAnonymously(BuildContext context) async {
     try {
+      final auth = AuthProvider.of(context);
       await auth.singInAnonymosly();
       //print('${authResult.user.uid}');
       // onSingIn(user);
@@ -19,8 +17,9 @@ class SingInPage extends StatelessWidget {
     }
   }
 
-  Future<void> _singInWithGoogle() async {
+  Future<void> _singInWithGoogle(BuildContext context) async {
     try {
+      final auth = AuthProvider.of(context);
       await auth.singInWithGoogle();
     } catch (e) {
       print(e.toString());
@@ -31,9 +30,7 @@ class SingInPage extends StatelessWidget {
     Navigator.of(context).push(
       MaterialPageRoute<void>(
         fullscreenDialog: true,
-        builder: (context) => EmailSingInPage(
-          auth: auth,
-        ),
+        builder: (context) => EmailSingInPage(),
       ),
     );
   }
@@ -77,7 +74,7 @@ class SingInPage extends StatelessWidget {
             text: 'Sing In With Google',
             textColor: Colors.black87,
             color: Colors.white,
-            onPressed: _singInWithGoogle,
+            onPressed: () => _singInWithGoogle(context),
             height: 50.0,
           ),
           SizedBox(
@@ -119,7 +116,7 @@ class SingInPage extends StatelessWidget {
             text: 'Go Anonymous',
             textColor: Colors.black87,
             color: Colors.lime[300],
-            onPressed: _singInAnonymously,
+            onPressed: () => _singInAnonymously(context),
             height: 50.0,
           ),
         ],
