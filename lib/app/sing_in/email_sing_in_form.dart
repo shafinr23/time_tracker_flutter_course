@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/validator.dart';
 import 'package:time_tracker_flutter_course/common_widgets/form_submit_button.dart';
@@ -45,11 +46,11 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
         await auth.regInWithEmailpass(_email, _pass);
       }
       Navigator.of(context).pop();
-    } catch (e) {
+    } on PlatformException catch (e) {
       //print(e.toString());
       PlatformAlartDialog(
         title: 'Sing in Failed ',
-        content: e.toString(),
+        content: e.message,
         defaultActionText: 'OK',
       ).show(context);
     } finally {
