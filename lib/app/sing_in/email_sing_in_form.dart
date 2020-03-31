@@ -25,6 +25,14 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
   EmailSingInType _formtype = EmailSingInType.singin;
   bool _submitted = false;
   bool _isLoading = false;
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _emailFocusNode.dispose();
+    _passController.dispose();
+    _passFocusNode.dispose();
+    super.dispose();
+  }
 
   void _emailEdottingCompleate() {
     final newFocus = widget.emailValidator.isvalid(_email)
