@@ -88,14 +88,7 @@ class _SingInPageState extends State<SingInPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text(
-            'Sing In',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 32.0,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          _buildHeader(),
           SizedBox(
             height: 48.0,
           ),
@@ -107,7 +100,7 @@ class _SingInPageState extends State<SingInPage> {
             text: 'Sing In With Google',
             textColor: Colors.black87,
             color: Colors.white,
-            onPressed: () => _singInWithGoogle(context),
+            onPressed: _isLoading ? null : () => _singInWithGoogle(context),
             height: 50.0,
           ),
           SizedBox(
@@ -149,10 +142,26 @@ class _SingInPageState extends State<SingInPage> {
             text: 'Go Anonymous',
             textColor: Colors.black87,
             color: Colors.lime[300],
-            onPressed: () => _singInAnonymously(context),
+            onPressed: _isLoading ? null : () => _singInAnonymously(context),
             height: 50.0,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    if (_isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    return Text(
+      'Sing In',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 32.0,
+        fontWeight: FontWeight.w600,
       ),
     );
   }
