@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/sing_in_button.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/social_sing_in_button.dart';
+import 'package:time_tracker_flutter_course/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
 import 'email_sing_in_page.dart';
 
 class SingInPage extends StatelessWidget {
+  void _showSingInError(BuildContext context, PlatformException exception) {
+    PlatformExceptionAlertDialog(
+      title: 'SING IN FAILED',
+      exception: exception,
+    ).show(context);
+  }
+
   Future<void> _singInAnonymously(BuildContext context) async {
     try {
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.singInAnonymosly();
       //print('${authResult.user.uid}');
       // onSingIn(user);
-    } catch (e) {
-      print(e.toString());
+    } on PlatformException catch (e) {
+      _showSingInError(context, e);
     }
   }
 
@@ -22,8 +31,10 @@ class SingInPage extends StatelessWidget {
     try {
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.singInWithGoogle();
-    } catch (e) {
-      print(e.toString());
+    } on PlatformException catch (e) {
+      if (e.code != 'Error_abrotted_by_user') {
+        _showSingInError(context, e);
+      }
     }
   }
 
