@@ -8,7 +8,14 @@ import 'package:time_tracker_flutter_course/services/auth.dart';
 
 import 'email_sing_in_page.dart';
 
-class SingInPage extends StatelessWidget {
+class SingInPage extends StatefulWidget {
+  @override
+  _SingInPageState createState() => _SingInPageState();
+}
+
+class _SingInPageState extends State<SingInPage> {
+  bool _isLoading = false;
+
   void _showSingInError(BuildContext context, PlatformException exception) {
     PlatformExceptionAlertDialog(
       title: 'SING IN FAILED',
@@ -17,6 +24,9 @@ class SingInPage extends StatelessWidget {
   }
 
   Future<void> _singInAnonymously(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.singInAnonymosly();
@@ -24,10 +34,17 @@ class SingInPage extends StatelessWidget {
       // onSingIn(user);
     } on PlatformException catch (e) {
       _showSingInError(context, e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   Future<void> _singInWithGoogle(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.singInWithGoogle();
@@ -35,6 +52,10 @@ class SingInPage extends StatelessWidget {
       if (e.code != 'Error_abrotted_by_user') {
         _showSingInError(context, e);
       }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
