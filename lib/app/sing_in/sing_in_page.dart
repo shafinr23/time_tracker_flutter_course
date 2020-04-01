@@ -75,7 +75,7 @@ class SingInPage extends StatelessWidget {
         elevation: 2.0,
       ),
       body: StreamBuilder<Object>(
-          stream: null,
+          stream: bloc.isLoadingStream,
           initialData: false,
           builder: (context, snapshot) {
             return _buildContent(context, snapshot.data);
