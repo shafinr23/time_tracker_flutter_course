@@ -14,8 +14,9 @@ class SingInPage extends StatelessWidget {
 
   const SingInPage({Key key, this.bloc}) : super(key: key);
   static Widget create(BuildContext context) {
+    final auth = Provider.of<AuthBase>(context);
     return Provider<SingInBloc>(
-      create: (_) => SingInBloc(),
+      create: (_) => SingInBloc(auth: auth),
       dispose: (context, bloc) => bloc.dispose(),
       child: Consumer<SingInBloc>(
           builder: (
@@ -38,29 +39,21 @@ class SingInPage extends StatelessWidget {
 
   Future<void> _singInAnonymously(BuildContext context) async {
     try {
-      bloc.setIsLoading(true);
-      final auth = Provider.of<AuthBase>(context, listen: false);
-      await auth.singInAnonymosly();
+      await bloc.singInAnonymosly();
       //print('${authResult.user.uid}');
       // onSingIn(user);
     } on PlatformException catch (e) {
       _showSingInError(context, e);
-    } finally {
-      bloc.setIsLoading(false);
     }
   }
 
   Future<void> _singInWithGoogle(BuildContext context) async {
     try {
-      bloc.setIsLoading(true);
-      final auth = Provider.of<AuthBase>(context, listen: false);
-      await auth.singInWithGoogle();
+      await bloc.singInWithGoogle();
     } on PlatformException catch (e) {
       if (e.code != 'Error_abrotted_by_user') {
         _showSingInError(context, e);
       }
-    } finally {
-      bloc.setIsLoading(false);
     }
   }
 
