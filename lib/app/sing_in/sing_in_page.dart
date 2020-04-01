@@ -16,6 +16,7 @@ class SingInPage extends StatelessWidget {
   static Widget create(BuildContext context) {
     return Provider<SingInBloc>(
       create: (_) => SingInBloc(),
+      dispose: (context, bloc) => bloc.dispose(),
       child: Consumer<SingInBloc>(
           builder: (
         context,
