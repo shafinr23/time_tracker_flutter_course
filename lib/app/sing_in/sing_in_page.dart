@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:time_tracker_flutter_course/app/sing_in/sing_in_bloc.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/sing_in_button.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/social_sing_in_button.dart';
 import 'package:time_tracker_flutter_course/common_widgets/platform_exception_alert_dialog.dart';
@@ -9,6 +10,13 @@ import 'package:time_tracker_flutter_course/services/auth.dart';
 import 'email_sing_in_page.dart';
 
 class SingInPage extends StatefulWidget {
+  static Widget create(BuildContext context) {
+    return Provider<SingInBloc>(
+      create: (_) => SingInBloc(),
+      child: SingInPage(),
+    );
+  }
+
   @override
   _SingInPageState createState() => _SingInPageState();
 }

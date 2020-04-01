@@ -1,6 +1,6 @@
 import 'dart:async';
 
-abstract class SingInBloc {
+class SingInBloc {
   final StreamController<bool> _isLoadingController = StreamController<bool>();
   Stream<bool> get isLoadingStream => _isLoadingController.stream;
   void dispose() {
