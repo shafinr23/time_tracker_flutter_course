@@ -10,10 +10,21 @@ import 'package:time_tracker_flutter_course/services/auth.dart';
 import 'email_sing_in_page.dart';
 
 class SingInPage extends StatelessWidget {
+  final SingInBloc bloc;
+
+  const SingInPage({Key key, this.bloc}) : super(key: key);
   static Widget create(BuildContext context) {
     return Provider<SingInBloc>(
       create: (_) => SingInBloc(),
-      child: SingInPage(),
+      child: Consumer<SingInBloc>(
+          builder: (
+        context,
+        bloc,
+        _,
+      ) =>
+              SingInPage(
+                bloc: bloc,
+              )),
     );
   }
 
@@ -25,8 +36,6 @@ class SingInPage extends StatelessWidget {
   }
 
   Future<void> _singInAnonymously(BuildContext context) async {
-    final bloc = Provider.of<SingInBloc>(context, listen: false);
-
     try {
       bloc.setIsLoading(true);
       final auth = Provider.of<AuthBase>(context, listen: false);
@@ -41,7 +50,6 @@ class SingInPage extends StatelessWidget {
   }
 
   Future<void> _singInWithGoogle(BuildContext context) async {
-    final bloc = Provider.of<SingInBloc>(context, listen: false);
     try {
       bloc.setIsLoading(true);
       final auth = Provider.of<AuthBase>(context, listen: false);
@@ -66,7 +74,6 @@ class SingInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = Provider.of<SingInBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('time tracker'),
