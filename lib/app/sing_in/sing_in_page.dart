@@ -9,20 +9,13 @@ import 'package:time_tracker_flutter_course/services/auth.dart';
 
 import 'email_sing_in_page.dart';
 
-class SingInPage extends StatefulWidget {
+class SingInPage extends StatelessWidget {
   static Widget create(BuildContext context) {
     return Provider<SingInBloc>(
       create: (_) => SingInBloc(),
       child: SingInPage(),
     );
   }
-
-  @override
-  _SingInPageState createState() => _SingInPageState();
-}
-
-class _SingInPageState extends State<SingInPage> {
-  bool _isLoading = false;
 
   void _showSingInError(BuildContext context, PlatformException exception) {
     PlatformExceptionAlertDialog(
@@ -32,10 +25,10 @@ class _SingInPageState extends State<SingInPage> {
   }
 
   Future<void> _singInAnonymously(BuildContext context) async {
-    setState(() {
-      _isLoading = true;
-    });
+    final bloc = Provider.of<SingInBloc>(context, listen: false);
+
     try {
+      bloc.setIsLoading(true);
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.singInAnonymosly();
       //print('${authResult.user.uid}');
@@ -43,17 +36,14 @@ class _SingInPageState extends State<SingInPage> {
     } on PlatformException catch (e) {
       _showSingInError(context, e);
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      bloc.setIsLoading(false);
     }
   }
 
   Future<void> _singInWithGoogle(BuildContext context) async {
-    setState(() {
-      _isLoading = true;
-    });
+    final bloc = Provider.of<SingInBloc>(context, listen: false);
     try {
+      bloc.setIsLoading(true);
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.singInWithGoogle();
     } on PlatformException catch (e) {
@@ -61,9 +51,7 @@ class _SingInPageState extends State<SingInPage> {
         _showSingInError(context, e);
       }
     } finally {
-      setState(() {
-        _isLoading = false;
-      });
+      bloc.setIsLoading(false);
     }
   }
 
@@ -102,7 +90,7 @@ class _SingInPageState extends State<SingInPage> {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _buildHeader(),
+          _buildHeader(isLoading),
           SizedBox(
             height: 48.0,
           ),
@@ -114,7 +102,7 @@ class _SingInPageState extends State<SingInPage> {
             text: 'Sing In With Google',
             textColor: Colors.black87,
             color: Colors.white,
-            onPressed: _isLoading ? null : () => _singInWithGoogle(context),
+            onPressed: isLoading ? null : () => _singInWithGoogle(context),
             height: 50.0,
           ),
           SizedBox(
@@ -156,7 +144,7 @@ class _SingInPageState extends State<SingInPage> {
             text: 'Go Anonymous',
             textColor: Colors.black87,
             color: Colors.lime[300],
-            onPressed: _isLoading ? null : () => _singInAnonymously(context),
+            onPressed: isLoading ? null : () => _singInAnonymously(context),
             height: 50.0,
           ),
         ],
@@ -164,8 +152,8 @@ class _SingInPageState extends State<SingInPage> {
     );
   }
 
-  Widget _buildHeader() {
-    if (_isLoading) {
+  Widget _buildHeader(bool isLoading) {
+    if (isLoading) {
       return Center(
         child: CircularProgressIndicator(),
       );
