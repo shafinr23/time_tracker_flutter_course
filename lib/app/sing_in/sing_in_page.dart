@@ -78,18 +78,24 @@ class _SingInPageState extends State<SingInPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = Provider.of<SingInBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('time tracker'),
         centerTitle: true,
         elevation: 2.0,
       ),
-      body: _buildContent(context),
+      body: StreamBuilder<Object>(
+          stream: null,
+          initialData: false,
+          builder: (context, snapshot) {
+            return _buildContent(context, snapshot.data);
+          }),
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildContent(BuildContext context) {
+  Widget _buildContent(BuildContext context, bool isLoading) {
     return Padding(
       padding: EdgeInsets.all(15.00),
       child: Column(
