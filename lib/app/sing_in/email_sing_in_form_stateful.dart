@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:time_tracker_flutter_course/app/sing_in/emailSingInModel.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/validator.dart';
 import 'package:time_tracker_flutter_course/common_widgets/form_submit_button.dart';
 import 'package:time_tracker_flutter_course/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
-
-enum EmailSingInType { singin, register }
 
 class EmailSingInFormStateful extends StatefulWidget
     with EmailAndPasswordValidator {
