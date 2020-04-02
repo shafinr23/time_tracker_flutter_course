@@ -13,4 +13,20 @@ class EmailSingInModel {
   final EmailSingInType fromType;
   final bool isLoading;
   final bool submitted;
+
+  EmailSingInModel copyWith({
+    final String email,
+    final String pass,
+    final EmailSingInType fromType,
+    final bool isLoading,
+    final bool submitted,
+  }) {
+    return EmailSingInModel(
+      email: email ?? this.email,
+      pass: pass ?? this.pass,
+      fromType: fromType ?? this.fromType,
+      isLoading: isLoading ?? this.isLoading,
+      submitted: submitted ?? this.submitted,
+    );
+  }
 }
