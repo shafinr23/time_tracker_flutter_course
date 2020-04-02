@@ -8,12 +8,14 @@ import 'package:time_tracker_flutter_course/services/auth.dart';
 
 enum EmailSingInType { singin, register }
 
-class EmailSingInForm extends StatefulWidget with EmailAndPasswordValidator {
+class EmailSingInFormStateful extends StatefulWidget
+    with EmailAndPasswordValidator {
   @override
-  _EmailSingInFormState createState() => _EmailSingInFormState();
+  _EmailSingInFormStatefulState createState() =>
+      _EmailSingInFormStatefulState();
 }
 
-class _EmailSingInFormState extends State<EmailSingInForm> {
+class _EmailSingInFormStatefulState extends State<EmailSingInFormStateful> {
   final TextEditingController _emailController = TextEditingController();
   // String email;
   final TextEditingController _passController = TextEditingController();
