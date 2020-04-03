@@ -42,7 +42,7 @@ class _EmailSingInFormStatefulState extends State<EmailSingInFormStateful> {
     FocusScope.of(context).requestFocus(newFocus);
   }
 
-  void _submit() async {
+  Future<void> _submit() async {
     setState(() {
       _submitted = true;
       _isLoading = true;
