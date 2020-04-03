@@ -3,13 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/emailSingInModel.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/email_sing_in_bloc.dart';
-import 'package:time_tracker_flutter_course/app/sing_in/validator.dart';
 import 'package:time_tracker_flutter_course/common_widgets/form_submit_button.dart';
 import 'package:time_tracker_flutter_course/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
-class EmailSingInFormBlocBased extends StatefulWidget
-    with EmailAndPasswordValidator {
+class EmailSingInFormBlocBased extends StatefulWidget {
   EmailSingInFormBlocBased({@required this.bloc});
   final EmailSingInBloc bloc;
   static Widget create(BuildContext context) {
@@ -52,7 +50,7 @@ class _EmailSingInFormBlocBasedState extends State<EmailSingInFormBlocBased> {
   }
 
   void _emailEdittingCompleate(EmailSingInModel model) {
-    final newFocus = widget.emailValidator.isvalid(model.email)
+    final newFocus = model.emailValidator.isvalid(model.email)
         ? _passFocusNode
         : _emailFocusNode;
     FocusScope.of(context).requestFocus(newFocus);
@@ -79,38 +77,26 @@ class _EmailSingInFormBlocBasedState extends State<EmailSingInFormBlocBased> {
   }
 
   List<Widget> _buildChildren(EmailSingInModel model) {
-    final primaryText = model.fromType == EmailSingInType.singin
-        ? 'sing in'
-        : 'create an account ';
-
-    final secenderText = model.fromType == EmailSingInType.register
-        ? 'meed an account ? register '
-        : 'have a acount ? sing in';
-    bool submitEnable = widget.emailValidator.isvalid(model.email) &&
-        widget.passValidator.isvalid(model.pass) &&
-        !model.isLoading;
     return [
       _buildEmailTextField(model),
       _buildPassTextField(model),
       FormSubmitButton(
-        onPressed: submitEnable ? _submit : null,
-        text: primaryText,
+        onPressed: model.submitEnable ? _submit : null,
+        text: model.primaryButtonText,
       ),
       FlatButton(
         onPressed: !model.isLoading ? _toggolForm : null,
-        child: Text(secenderText),
+        child: Text(model.seconderyButtonText),
       )
     ];
   }
 
   TextField _buildPassTextField(EmailSingInModel model) {
-    bool showErrorText =
-        model.submitted && !widget.passValidator.isvalid(model.pass);
     return TextField(
       decoration: InputDecoration(
         enabled: model.isLoading == false,
         labelText: 'passWord',
-        errorText: showErrorText ? widget.invalidePassError : null,
+        errorText: model.passErrorText,
       ),
       obscureText: true,
       controller: _passController,
@@ -121,14 +107,12 @@ class _EmailSingInFormBlocBasedState extends State<EmailSingInFormBlocBased> {
   }
 
   TextField _buildEmailTextField(EmailSingInModel model) {
-    bool showErrorText =
-        model.submitted && !widget.emailValidator.isvalid(model.email);
     return TextField(
       decoration: InputDecoration(
         enabled: model.isLoading == false,
         labelText: 'Email',
         hintText: 'Test@email.com',
-        errorText: showErrorText ? widget.invalideEmailError : null,
+        errorText: model.emailErrorText,
       ),
       controller: _emailController,
       autocorrect: false,
