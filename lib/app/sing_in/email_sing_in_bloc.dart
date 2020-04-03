@@ -35,6 +35,21 @@ class EmailSingInBloc {
     }
   }
 
+  void toggleFormType() {
+    final formType = _model.fromType == EmailSingInType.singin
+        ? EmailSingInType.register
+        : EmailSingInType.singin;
+    updateWith(
+      email: '',
+      pass: '',
+      submitted: false,
+      isLoading: false,
+      formType: formType,
+    );
+  }
+
+  void updateWithEmail(String email) => updateWith(email: email);
+  void updateWithpass(String pass) => updateWith(pass: pass);
   void updateWith(
       {String email,
       String pass,

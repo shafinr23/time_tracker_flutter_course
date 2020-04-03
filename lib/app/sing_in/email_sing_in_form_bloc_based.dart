@@ -71,16 +71,8 @@ class _EmailSingInFormBlocBasedState extends State<EmailSingInFormBlocBased> {
     }
   }
 
-  void _toggolForm(EmailSingInModel model) {
-    widget.bloc.updateWith(
-      email: '',
-      pass: '',
-      submitted: false,
-      isLoading: false,
-      formType: model.fromType == EmailSingInType.singin
-          ? EmailSingInType.register
-          : EmailSingInType.singin,
-    );
+  void _toggolForm() {
+    widget.bloc.toggleFormType();
 
     _emailController.clear();
     _passController.clear();
@@ -105,7 +97,7 @@ class _EmailSingInFormBlocBasedState extends State<EmailSingInFormBlocBased> {
         text: primaryText,
       ),
       FlatButton(
-        onPressed: !model.isLoading ? () => _toggolForm(model) : null,
+        onPressed: !model.isLoading ? _toggolForm : null,
         child: Text(secenderText),
       )
     ];
@@ -124,7 +116,7 @@ class _EmailSingInFormBlocBasedState extends State<EmailSingInFormBlocBased> {
       controller: _passController,
       textInputAction: TextInputAction.done,
       focusNode: _passFocusNode,
-      onChanged: (pass) => widget.bloc.updateWith(pass: pass),
+      onChanged: widget.bloc.updateWithpass,
     );
   }
 
@@ -144,7 +136,7 @@ class _EmailSingInFormBlocBasedState extends State<EmailSingInFormBlocBased> {
       textInputAction: TextInputAction.next,
       focusNode: _emailFocusNode,
       onEditingComplete: () => _emailEdittingCompleate,
-      onChanged: (email) => widget.bloc.updateWith(email: email),
+      onChanged: widget.bloc.updateWithEmail,
     );
   }
 
