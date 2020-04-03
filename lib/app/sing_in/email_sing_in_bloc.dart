@@ -24,14 +24,13 @@ class EmailSingInBloc {
         await auth.regInWithEmailpass(_model.email, _model.pass);
       }
     } catch (e) {
+      updateWith(isLoading: false);
       rethrow;
       //print(e.toString());
 //      PlatformExceptionAlertDialog(
 //        title: 'Sing in Failed ',
 //        exception: e,
 //      ).show(context);
-    } finally {
-      updateWith(isLoading: false);
     }
   }
 
