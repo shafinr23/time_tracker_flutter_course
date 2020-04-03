@@ -37,11 +37,11 @@ class _EmailSingInFormBlocBasedState extends State<EmailSingInFormBlocBased> {
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passFocusNode = FocusNode();
 
-  String get _email => _emailController.text;
-  String get _pass => _passController.text;
-  EmailSingInType _formtype = EmailSingInType.singin;
-  bool _submitted = false;
-  bool _isLoading = false;
+//  String get _email => _emailController.text;
+//  String get _pass => _passController.text;
+//  EmailSingInType _formtype = EmailSingInType.singin;
+//  bool _submitted = false;
+//  bool _isLoading = false;
   @override
   void dispose() {
     _emailController.dispose();
@@ -51,25 +51,16 @@ class _EmailSingInFormBlocBasedState extends State<EmailSingInFormBlocBased> {
     super.dispose();
   }
 
-  void _emailEdottingCompleate() {
-    final newFocus = widget.emailValidator.isvalid(_email)
+  void _emailEdittingCompleate(EmailSingInModel model) {
+    final newFocus = widget.emailValidator.isvalid(model.email)
         ? _passFocusNode
         : _emailFocusNode;
     FocusScope.of(context).requestFocus(newFocus);
   }
 
   Future<void> _submit() async {
-    setState(() {
-      _submitted = true;
-      _isLoading = true;
-    });
     try {
-      final auth = Provider.of<AuthBase>(context, listen: false);
-      if (_formtype == EmailSingInType.singin) {
-        await auth.singInWithEmailpass(_email, _pass);
-      } else {
-        await auth.regInWithEmailpass(_email, _pass);
-      }
+      await widget.bloc.submit();
       Navigator.of(context).pop();
     } on PlatformException catch (e) {
       //print(e.toString());
@@ -77,53 +68,55 @@ class _EmailSingInFormBlocBasedState extends State<EmailSingInFormBlocBased> {
         title: 'Sing in Failed ',
         exception: e,
       ).show(context);
-    } finally {
-      setState(() {
-        _isLoading = false;
-      });
     }
   }
 
-  void _toggolForm() {
-    setState(() {
-      _submitted = false;
-      _formtype = _formtype == EmailSingInType.singin
+  void _toggolForm(EmailSingInModel model) {
+    widget.bloc.updateWith(
+      email: '',
+      pass: '',
+      submitted: false,
+      isLoading: false,
+      formType: model.fromType == EmailSingInType.singin
           ? EmailSingInType.register
-          : EmailSingInType.singin;
-    });
+          : EmailSingInType.singin,
+    );
+
     _emailController.clear();
     _passController.clear();
   }
 
-  List<Widget> _buildChildren() {
-    final primaryText =
-        _formtype == EmailSingInType.singin ? 'sing in' : 'create an account ';
+  List<Widget> _buildChildren(EmailSingInModel model) {
+    final primaryText = model.fromType == EmailSingInType.singin
+        ? 'sing in'
+        : 'create an account ';
 
-    final secenderText = _formtype == EmailSingInType.register
+    final secenderText = model.fromType == EmailSingInType.register
         ? 'meed an account ? register '
         : 'have a acount ? sing in';
-    bool submitEnable = widget.emailValidator.isvalid(_email) &&
-        widget.passValidator.isvalid(_pass) &&
-        !_isLoading;
+    bool submitEnable = widget.emailValidator.isvalid(model.email) &&
+        widget.passValidator.isvalid(model.pass) &&
+        !model.isLoading;
     return [
-      _buildEmailTextField(),
-      _buildPassTextField(),
+      _buildEmailTextField(model),
+      _buildPassTextField(model),
       FormSubmitButton(
         onPressed: submitEnable ? _submit : null,
         text: primaryText,
       ),
       FlatButton(
-        onPressed: !_isLoading ? _toggolForm : null,
+        onPressed: !model.isLoading ? () => _toggolForm(model) : null,
         child: Text(secenderText),
       )
     ];
   }
 
-  TextField _buildPassTextField() {
-    bool showErrorText = _submitted && !widget.passValidator.isvalid(_pass);
+  TextField _buildPassTextField(EmailSingInModel model) {
+    bool showErrorText =
+        model.submitted && !widget.passValidator.isvalid(model.pass);
     return TextField(
       decoration: InputDecoration(
-        enabled: _isLoading == false,
+        enabled: model.isLoading == false,
         labelText: 'passWord',
         errorText: showErrorText ? widget.invalidePassError : null,
       ),
@@ -131,17 +124,16 @@ class _EmailSingInFormBlocBasedState extends State<EmailSingInFormBlocBased> {
       controller: _passController,
       textInputAction: TextInputAction.done,
       focusNode: _passFocusNode,
-      onChanged: (pass) {
-        _updateState();
-      },
+      onChanged: (pass) => widget.bloc.updateWith(pass: pass),
     );
   }
 
-  TextField _buildEmailTextField() {
-    bool showErrorText = _submitted && !widget.emailValidator.isvalid(_email);
+  TextField _buildEmailTextField(EmailSingInModel model) {
+    bool showErrorText =
+        model.submitted && !widget.emailValidator.isvalid(model.email);
     return TextField(
       decoration: InputDecoration(
-        enabled: _isLoading == false,
+        enabled: model.isLoading == false,
         labelText: 'Email',
         hintText: 'Test@email.com',
         errorText: showErrorText ? widget.invalideEmailError : null,
@@ -151,10 +143,8 @@ class _EmailSingInFormBlocBasedState extends State<EmailSingInFormBlocBased> {
       keyboardType: TextInputType.emailAddress,
       textInputAction: TextInputAction.next,
       focusNode: _emailFocusNode,
-      onEditingComplete: _emailEdottingCompleate,
-      onChanged: (email) {
-        _updateState;
-      },
+      onEditingComplete: () => _emailEdittingCompleate,
+      onChanged: (email) => widget.bloc.updateWith(email: email),
     );
   }
 
@@ -164,19 +154,20 @@ class _EmailSingInFormBlocBasedState extends State<EmailSingInFormBlocBased> {
         stream: widget.bloc.modelStream,
         initialData: EmailSingInModel(),
         builder: (context, snapshot) {
+          final EmailSingInModel model = snapshot.data;
           return Padding(
             padding: const EdgeInsets.all(18.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: _buildChildren(),
+              children: _buildChildren(model),
             ),
           );
         });
   }
 
-  void _updateState() {
-    //  print('email is : $_email , pass is : $_pass');
-    setState(() {});
-  }
+//  void _updateState() {
+//    //  print('email is : $_email , pass is : $_pass');
+//    setState(() {});
+//  }
 }
