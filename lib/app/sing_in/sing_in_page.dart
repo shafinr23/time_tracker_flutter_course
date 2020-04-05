@@ -19,14 +19,7 @@ class SingInPage extends StatelessWidget {
       create: (_) => SingInBloc(auth: auth),
       dispose: (context, bloc) => bloc.dispose(),
       child: Consumer<SingInBloc>(
-          builder: (
-        context,
-        bloc,
-        _,
-      ) =>
-              SingInPage(
-                bloc: bloc,
-              )),
+          builder: (context, bloc, _) => SingInPage(bloc: bloc)),
     );
   }
 
