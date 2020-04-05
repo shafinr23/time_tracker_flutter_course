@@ -4,25 +4,17 @@ import 'package:flutter/foundation.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
 class SingInBloc {
-  SingInBloc({@required this.auth});
+  SingInBloc({@required this.auth, @required this.isloading});
 
   final AuthBase auth;
-  final StreamController<bool> _isLoadingController = StreamController<bool>();
-
-  Stream<bool> get isLoadingStream => _isLoadingController.stream;
-
-  void dispose() {
-    _isLoadingController.close();
-  }
-
-  void _setIsLoading(bool isLoading) => _isLoadingController.add(isLoading);
+  final ValueNotifier<bool> isloading;
 
   Future<User> _singIn(Future<User> Function() singInMathod) async {
     try {
-      _setIsLoading(true);
+      isloading.value = true;
       return await singInMathod();
     } catch (e) {
-      _setIsLoading(false);
+      isloading.value = false;
       rethrow;
     }
   }

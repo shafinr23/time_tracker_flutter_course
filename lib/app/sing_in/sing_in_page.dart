@@ -15,11 +15,15 @@ class SingInPage extends StatelessWidget {
   const SingInPage({Key key, this.bloc}) : super(key: key);
   static Widget create(BuildContext context) {
     final auth = Provider.of<AuthBase>(context);
-    return Provider<SingInBloc>(
-      create: (_) => SingInBloc(auth: auth),
-      dispose: (context, bloc) => bloc.dispose(),
-      child: Consumer<SingInBloc>(
-          builder: (context, bloc, _) => SingInPage(bloc: bloc)),
+    return ChangeNotifierProvider<ValueNotifier<bool>>(
+      create: (_) => ValueNotifier<bool>(false),
+      child: Consumer<ValueNotifier<bool>>(
+        builder: (_, isLoading, __) => Provider<SingInBloc>(
+          create: (_) => SingInBloc(auth: auth, isloading: isLoading),
+          child: Consumer<SingInBloc>(
+              builder: (context, bloc, _) => SingInPage(bloc: bloc)),
+        ),
+      ),
     );
   }
 
@@ -61,18 +65,14 @@ class SingInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = Provider.of<ValueNotifier<bool>>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('time tracker'),
         centerTitle: true,
         elevation: 2.0,
       ),
-      body: StreamBuilder<bool>(
-          stream: bloc.isLoadingStream,
-          initialData: false,
-          builder: (context, snapshot) {
-            return _buildContent(context, snapshot.data);
-          }),
+      body: _buildContent(context, isLoading.value),
       backgroundColor: Colors.grey[200],
     );
   }
