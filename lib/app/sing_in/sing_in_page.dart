@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:time_tracker_flutter_course/app/sing_in/sing_in_bloc.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/sing_in_button.dart';
+import 'package:time_tracker_flutter_course/app/sing_in/sing_in_manager.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/social_sing_in_button.dart';
 import 'package:time_tracker_flutter_course/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
@@ -10,18 +10,23 @@ import 'package:time_tracker_flutter_course/services/auth.dart';
 import 'email_sing_in_page.dart';
 
 class SingInPage extends StatelessWidget {
-  final SingInBloc bloc;
+  final SingInManager manager;
+  final bool isLoading;
 
-  const SingInPage({Key key, this.bloc}) : super(key: key);
+  const SingInPage({Key key, this.manager, @required this.isLoading})
+      : super(key: key);
   static Widget create(BuildContext context) {
     final auth = Provider.of<AuthBase>(context);
     return ChangeNotifierProvider<ValueNotifier<bool>>(
       create: (_) => ValueNotifier<bool>(false),
       child: Consumer<ValueNotifier<bool>>(
-        builder: (_, isLoading, __) => Provider<SingInBloc>(
-          create: (_) => SingInBloc(auth: auth, isloading: isLoading),
-          child: Consumer<SingInBloc>(
-              builder: (context, bloc, _) => SingInPage(bloc: bloc)),
+        builder: (_, isLoading, __) => Provider<SingInManager>(
+          create: (_) => SingInManager(auth: auth, isloading: isLoading),
+          child: Consumer<SingInManager>(
+              builder: (context, manager, _) => SingInPage(
+                    manager: manager,
+                    isLoading: isLoading.value,
+                  )),
         ),
       ),
     );
@@ -36,7 +41,7 @@ class SingInPage extends StatelessWidget {
 
   Future<void> _singInAnonymously(BuildContext context) async {
     try {
-      await bloc.singInAnonymosly();
+      await manager.singInAnonymosly();
       //print('${authResult.user.uid}');
       // onSingIn(user);
     } on PlatformException catch (e) {
@@ -46,7 +51,7 @@ class SingInPage extends StatelessWidget {
 
   Future<void> _singInWithGoogle(BuildContext context) async {
     try {
-      await bloc.singInWithGoogle();
+      await manager.singInWithGoogle();
     } on PlatformException catch (e) {
       if (e.code != 'Error_abrotted_by_user') {
         _showSingInError(context, e);
@@ -65,26 +70,25 @@ class SingInPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = Provider.of<ValueNotifier<bool>>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text('time tracker'),
         centerTitle: true,
         elevation: 2.0,
       ),
-      body: _buildContent(context, isLoading.value),
+      body: _buildContent(context),
       backgroundColor: Colors.grey[200],
     );
   }
 
-  Widget _buildContent(BuildContext context, bool isLoading) {
+  Widget _buildContent(BuildContext context) {
     return Padding(
       padding: EdgeInsets.all(15.00),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          _buildHeader(isLoading),
+          _buildHeader(),
           SizedBox(
             height: 48.0,
           ),
@@ -146,7 +150,7 @@ class SingInPage extends StatelessWidget {
     );
   }
 
-  Widget _buildHeader(bool isLoading) {
+  Widget _buildHeader() {
     if (isLoading) {
       return Center(
         child: CircularProgressIndicator(),

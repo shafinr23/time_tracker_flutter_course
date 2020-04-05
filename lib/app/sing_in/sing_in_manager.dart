@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
-class SingInBloc {
-  SingInBloc({@required this.auth, @required this.isloading});
+class SingInManager {
+  SingInManager({@required this.auth, @required this.isloading});
 
   final AuthBase auth;
   final ValueNotifier<bool> isloading;
