@@ -1,29 +1,61 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/sing_in_button.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/social_sing_in_button.dart';
+import 'package:time_tracker_flutter_course/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
 import 'email_sing_in_page.dart';
 
-class SingInPage extends StatelessWidget {
+class SingInPage extends StatefulWidget {
+  @override
+  _SingInPageState createState() => _SingInPageState();
+}
+
+class _SingInPageState extends State<SingInPage> {
+  bool _isLoading = false;
+
+  void _showSingInError(BuildContext context, PlatformException exception) {
+    PlatformExceptionAlertDialog(
+      title: 'SING IN FAILED',
+      exception: exception,
+    ).show(context);
+  }
+
   Future<void> _singInAnonymously(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.singInAnonymosly();
       //print('${authResult.user.uid}');
       // onSingIn(user);
-    } catch (e) {
-      print(e.toString());
+    } on PlatformException catch (e) {
+      _showSingInError(context, e);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
   Future<void> _singInWithGoogle(BuildContext context) async {
+    setState(() {
+      _isLoading = true;
+    });
     try {
       final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.singInWithGoogle();
-    } catch (e) {
-      print(e.toString());
+    } on PlatformException catch (e) {
+      if (e.code != 'Error_abrotted_by_user') {
+        _showSingInError(context, e);
+      }
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -56,14 +88,7 @@ class SingInPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: <Widget>[
-          Text(
-            'Sing In',
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              fontSize: 32.0,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
+          _buildHeader(),
           SizedBox(
             height: 48.0,
           ),
@@ -75,7 +100,7 @@ class SingInPage extends StatelessWidget {
             text: 'Sing In With Google',
             textColor: Colors.black87,
             color: Colors.white,
-            onPressed: () => _singInWithGoogle(context),
+            onPressed: _isLoading ? null : () => _singInWithGoogle(context),
             height: 50.0,
           ),
           SizedBox(
@@ -117,10 +142,26 @@ class SingInPage extends StatelessWidget {
             text: 'Go Anonymous',
             textColor: Colors.black87,
             color: Colors.lime[300],
-            onPressed: () => _singInAnonymously(context),
+            onPressed: _isLoading ? null : () => _singInAnonymously(context),
             height: 50.0,
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildHeader() {
+    if (_isLoading) {
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+    return Text(
+      'Sing In',
+      textAlign: TextAlign.center,
+      style: TextStyle(
+        fontSize: 32.0,
+        fontWeight: FontWeight.w600,
       ),
     );
   }

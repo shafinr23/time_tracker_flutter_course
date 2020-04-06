@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/validator.dart';
 import 'package:time_tracker_flutter_course/common_widgets/form_submit_button.dart';
-import 'package:time_tracker_flutter_course/common_widgets/platform_alart_dialog.dart';
+import 'package:time_tracker_flutter_course/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
 
 enum EmailSingInType { singin, register }
@@ -24,6 +25,14 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
   EmailSingInType _formtype = EmailSingInType.singin;
   bool _submitted = false;
   bool _isLoading = false;
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _emailFocusNode.dispose();
+    _passController.dispose();
+    _passFocusNode.dispose();
+    super.dispose();
+  }
 
   void _emailEdottingCompleate() {
     final newFocus = widget.emailValidator.isvalid(_email)
@@ -45,12 +54,11 @@ class _EmailSingInFormState extends State<EmailSingInForm> {
         await auth.regInWithEmailpass(_email, _pass);
       }
       Navigator.of(context).pop();
-    } catch (e) {
+    } on PlatformException catch (e) {
       //print(e.toString());
-      PlatformAlartDialog(
+      PlatformExceptionAlertDialog(
         title: 'Sing in Failed ',
-        content: e.toString(),
-        defaultActionText: 'OK',
+        exception: e,
       ).show(context);
     } finally {
       setState(() {
