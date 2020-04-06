@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/sing_in_button.dart';
 import 'package:time_tracker_flutter_course/app/sing_in/social_sing_in_button.dart';
-import 'package:time_tracker_flutter_course/services/auth_provider.dart';
+import 'package:time_tracker_flutter_course/services/auth.dart';
 
 import 'email_sing_in_page.dart';
 
 class SingInPage extends StatelessWidget {
   Future<void> _singInAnonymously(BuildContext context) async {
     try {
-      final auth = AuthProvider.of(context);
+      final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.singInAnonymosly();
       //print('${authResult.user.uid}');
       // onSingIn(user);
@@ -19,7 +20,7 @@ class SingInPage extends StatelessWidget {
 
   Future<void> _singInWithGoogle(BuildContext context) async {
     try {
-      final auth = AuthProvider.of(context);
+      final auth = Provider.of<AuthBase>(context, listen: false);
       await auth.singInWithGoogle();
     } catch (e) {
       print(e.toString());
