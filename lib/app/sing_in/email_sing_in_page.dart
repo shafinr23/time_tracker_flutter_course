@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'email_sing_in_form.dart';
+import 'email_sing_in_form_change_notifer_based.dart';
 
 class EmailSingInPage extends StatelessWidget {
   @override
@@ -15,7 +15,7 @@ class EmailSingInPage extends StatelessWidget {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Card(
-            child: EmailSingInForm(),
+            child: EmailSingInFormChangeNotifier.create(context),
           ),
         ),
       ),

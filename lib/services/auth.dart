@@ -12,9 +12,9 @@ abstract class AuthBase {
   Stream<User> get onAuthStateChange;
   Future<User> currentUser();
   Future<User> singInAnonymosly();
+  Future<User> singInWithGoogle();
   Future<User> singInWithEmailpass(String email, String pass);
   Future<User> regInWithEmailpass(String email, String pass);
-  Future<User> singInWithGoogle();
   Future<void> singOut();
 }
 
