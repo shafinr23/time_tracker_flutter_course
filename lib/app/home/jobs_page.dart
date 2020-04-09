@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:time_tracker_flutter_course/app/home/models/job.dart';
 import 'package:time_tracker_flutter_course/common_widgets/platform_alart_dialog.dart';
+import 'package:time_tracker_flutter_course/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/services/auth.dart';
+import 'package:time_tracker_flutter_course/services/database.dart';
 
-class HomePage extends StatelessWidget {
+class JobsPage extends StatelessWidget {
   Future<void> _singOut(BuildContext context) async {
     try {
       final auth = Provider.of<AuthBase>(context, listen: false);
@@ -26,11 +30,24 @@ class HomePage extends StatelessWidget {
     }
   }
 
+  Future<void> _createJob(BuildContext context) async {
+    try {
+      final database = Provider.of<Database>(context, listen: false);
+
+      await database.createJob(Job(name: 'blogging', ratePerHour: 35));
+    } on PlatformException catch (e) {
+      PlatformExceptionAlertDialog(
+        title: 'opration failed',
+        exception: e,
+      ).show(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Home'),
+        title: Text('Jobs'),
         centerTitle: true,
         actions: <Widget>[
           FlatButton(
@@ -41,6 +58,10 @@ class HomePage extends StatelessWidget {
             onPressed: () => _confirmSingout(context),
           )
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () => _createJob(context),
       ),
     );
   }
