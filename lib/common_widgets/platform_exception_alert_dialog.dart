@@ -12,11 +12,14 @@ class PlatformExceptionAlertDialog extends PlatformAlartDialog {
           defaultActionText: 'OK',
         );
   static String _massage(PlatformException exception) {
+    print(exception);
+
     return _errors[exception.code] ?? exception.message;
   }
 
   static Map<String, String> _errors = {
     ///  * `ERROR_WEAK_PASSWORD` - If the password is not strong enough.
+    ///  * `ERROR_INVALID_EMAIL` - If the email address is malformed.
     ///  * `ERROR_INVALID_EMAIL` - If the email address is malformed.
     ///  * `ERROR_EMAIL_ALREADY_IN_USE` - If the email is already in use by a different account.
     ///  * `ERROR_INVALID_EMAIL` - If the [email] address is malformed.
