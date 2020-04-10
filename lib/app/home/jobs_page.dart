@@ -34,7 +34,7 @@ class JobsPage extends StatelessWidget {
     try {
       final database = Provider.of<Database>(context, listen: false);
 
-      await database.createJob(Job(name: 'blogging', ratePerHour: 35));
+      await database.createJob(Job(name: 'blogging', ratePerHour: 45));
     } on PlatformException catch (e) {
       PlatformExceptionAlertDialog(
         title: 'opration failed',
