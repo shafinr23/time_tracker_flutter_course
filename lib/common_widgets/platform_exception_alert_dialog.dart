@@ -13,6 +13,11 @@ class PlatformExceptionAlertDialog extends PlatformAlartDialog {
         );
   static String _massage(PlatformException exception) {
     print(exception);
+    if (exception.message == 'FIRFirestoreErrorDomain') {
+      if (exception.code == 'Error 7') {
+        return 'Missing or insuffisiant permission';
+      }
+    }
 
     return _errors[exception.code] ?? exception.message;
   }
