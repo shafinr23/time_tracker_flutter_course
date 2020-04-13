@@ -16,6 +16,7 @@ final _service = FirestoreService.instance;
 class FirestoreDatabase implements Database {
   FirestoreDatabase({@required this.uid}) : assert(uid != null);
   final String uid;
+
   Future<void> createJob(Job job) async => await _service.setData(
         path: APIPath.job(uid, 'job_abc'),
         data: job.toMap(),
