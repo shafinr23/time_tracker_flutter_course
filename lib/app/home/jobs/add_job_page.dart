@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker_flutter_course/app/home/models/job.dart';
+import 'package:time_tracker_flutter_course/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/services/database.dart';
 
 class AddJobPage extends StatefulWidget {
@@ -39,9 +41,17 @@ class _AddJobPageState extends State<AddJobPage> {
   Future<void> _submit() async {
     //TODO:validate and save from
     if (_validateAndSave()) {
-      final job = Job(name: _name, ratePerHour: _ratePerHpur);
-      await widget.database.createJob(job);
-      Navigator.of(context).pop();
+      try {
+        final job = Job(name: _name, ratePerHour: _ratePerHpur);
+        await widget.database.createJob(job);
+        Navigator.of(context).pop();
+      } on PlatformException catch (e) {
+        //print(e.toString());
+        PlatformExceptionAlertDialog(
+          title: 'Opration failed ',
+          exception: e,
+        ).show(context);
+      }
     }
   }
 
