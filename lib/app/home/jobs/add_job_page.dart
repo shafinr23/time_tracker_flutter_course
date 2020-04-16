@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:time_tracker_flutter_course/app/home/models/job.dart';
+import 'package:time_tracker_flutter_course/common_widgets/platform_alart_dialog.dart';
 import 'package:time_tracker_flutter_course/common_widgets/platform_exception_alert_dialog.dart';
 import 'package:time_tracker_flutter_course/services/database.dart';
 
@@ -42,9 +43,19 @@ class _AddJobPageState extends State<AddJobPage> {
     //TODO:validate and save from
     if (_validateAndSave()) {
       try {
-        final job = Job(name: _name, ratePerHour: _ratePerHpur);
-        await widget.database.createJob(job);
-        Navigator.of(context).pop();
+        final jobs = await widget.database.jobsStream().first;
+        final allNames = jobs.map((job) => job.name).toList();
+        if (allNames.contains(_name)) {
+          PlatformAlartDialog(
+            title: 'Name is used',
+            content: 'choose a diffrent one ',
+            defaultActionText: 'OK',
+          ).show(context);
+        } else {
+          final job = Job(name: _name, ratePerHour: _ratePerHpur);
+          await widget.database.createJob(job);
+          Navigator.of(context).pop();
+        }
       } on PlatformException catch (e) {
         //print(e.toString());
         PlatformExceptionAlertDialog(
@@ -114,8 +125,11 @@ class _AddJobPageState extends State<AddJobPage> {
         decoration: InputDecoration(
           labelText: 'Rate Per Hour',
         ),
-        keyboardType: TextInputType.number,
-        onSaved: (value) => _ratePerHpur = int.parse(value) ?? 0,
+        keyboardType: TextInputType.numberWithOptions(
+          signed: false,
+          decimal: false,
+        ),
+        onSaved: (value) => _ratePerHpur = int.tryParse(value) ?? 0,
       )
     ];
   }
